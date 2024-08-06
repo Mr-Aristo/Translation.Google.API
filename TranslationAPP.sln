@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{30745315-86BE-44F4-A253-B5DB75DC5800}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TranslateIntegration", "TranslateIntegration", "{5510BD76-8829-45EF-AFFF-B833F84E8169}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{9D1D031F-25AB-4356-BB31-B132D2EA6631}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TranslationConsole", "TranslationConsole", "{F853732B-FFD1-4950-B329-9CB6DB196F0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationConsoleClient", "Clients\TranslationConsole\TranslationConsoleClient\TranslationConsoleClient.csproj", "{8C855983-74C1-47EC-BA96-B960AF872C39}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "gRPC", "gRPC", "{998D587E-D549-4A42-B618-9306EA038E66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationGrpcService", "Services\gRPC\TranslationGrpcService\TranslationGrpcService.csproj", "{C22DB39B-3C70-44D4-8AC9-A50750CF9455}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TranslationGrpcConsole", "TranslationGrpcConsole", "{DB62975B-9E46-4878-90ED-666772F3F6F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationIntegrationService", "Services\TranslationIntegration\TranslationIntegrationService\TranslationIntegrationService.csproj", "{FBBEF040-0579-4F7C-9D9A-20197FF84E96}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8C855983-74C1-47EC-BA96-B960AF872C39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C855983-74C1-47EC-BA96-B960AF872C39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C855983-74C1-47EC-BA96-B960AF872C39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C855983-74C1-47EC-BA96-B960AF872C39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C22DB39B-3C70-44D4-8AC9-A50750CF9455}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C22DB39B-3C70-44D4-8AC9-A50750CF9455}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C22DB39B-3C70-44D4-8AC9-A50750CF9455}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C22DB39B-3C70-44D4-8AC9-A50750CF9455}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBBEF040-0579-4F7C-9D9A-20197FF84E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBBEF040-0579-4F7C-9D9A-20197FF84E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBBEF040-0579-4F7C-9D9A-20197FF84E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBBEF040-0579-4F7C-9D9A-20197FF84E96}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5510BD76-8829-45EF-AFFF-B833F84E8169} = {30745315-86BE-44F4-A253-B5DB75DC5800}
+		{F853732B-FFD1-4950-B329-9CB6DB196F0B} = {9D1D031F-25AB-4356-BB31-B132D2EA6631}
+		{8C855983-74C1-47EC-BA96-B960AF872C39} = {F853732B-FFD1-4950-B329-9CB6DB196F0B}
+		{998D587E-D549-4A42-B618-9306EA038E66} = {30745315-86BE-44F4-A253-B5DB75DC5800}
+		{C22DB39B-3C70-44D4-8AC9-A50750CF9455} = {998D587E-D549-4A42-B618-9306EA038E66}
+		{DB62975B-9E46-4878-90ED-666772F3F6F9} = {9D1D031F-25AB-4356-BB31-B132D2EA6631}
+		{FBBEF040-0579-4F7C-9D9A-20197FF84E96} = {5510BD76-8829-45EF-AFFF-B833F84E8169}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {671443F6-1357-42DB-983B-616C05E75E9C}
+	EndGlobalSection
+EndGlobal
