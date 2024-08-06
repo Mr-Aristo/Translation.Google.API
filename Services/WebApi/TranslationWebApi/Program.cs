@@ -1,8 +1,7 @@
-using Microsoft.Extensions.Configuration;
-using TranslationGrpcService.Services;
+
 using TranslationIntegrationService.Abstraction;
 
-namespace TranslationGrpcService
+namespace TranslationWebApi
 {
     public class Program
     {
@@ -11,7 +10,6 @@ namespace TranslationGrpcService
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddGrpc();
             builder.Services.AddSingleton<ITranslationService>(provider =>
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
@@ -19,12 +17,26 @@ namespace TranslationGrpcService
                 var redisConnectionString = configuration["RedisConnectionString"];
                 return new GoogleTranslationService(googleApiKey, redisConnectionString);
             });
+            builder.Services.AddControllers();
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            app.MapGrpcService<GrpcTranslationService>();
-            app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseAuthorization();
+
+
+            app.MapControllers();
 
             app.Run();
         }
