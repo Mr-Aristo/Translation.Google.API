@@ -1,4 +1,8 @@
-﻿using Grpc.Net.Client;
+﻿using System;
+using System.Threading.Tasks;
+using Grpc.Net.Client;
+using Serilog;
+using TranslationGrpcConsoleClient;
 
 namespace TranslationGrpcConsoleClient
 {
@@ -6,26 +10,79 @@ namespace TranslationGrpcConsoleClient
     {
         static async Task Main(string[] args)
         {
-            using var channel = GrpcChannel.ForAddress("http://localhost:5231");
-            var client = new TranslationService.TranslationServiceClient(channel);
-            
+            // Serilog configuration
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
 
-            Console.WriteLine("Enter text to translate:");
-            var text = Console.ReadLine();
-            Console.WriteLine("Enter source language code:");
-            var fromLanguage = Console.ReadLine();
-            Console.WriteLine("Enter target language code:");
-            var toLanguage = Console.ReadLine();
-
-            var request = new TranslateRequest
+            try
             {
-                Text = text,
-                FromLanguage = fromLanguage,
-                ToLanguage = toLanguage
-            };
+                using var channel = GrpcChannel.ForAddress("http://localhost:5231");
+                var client = new TranslationService.TranslationServiceClient(channel);
 
-            var response = await client.TranslateAsync(request);
-            Console.WriteLine($"Translation: {response.TranslatedText}");
+                // Get Service Info
+                try
+                {
+                    Log.Information("Requesting service info.");
+                    var serviceInfoResponse = await client.GetServiceInfoAsync(new Google.Protobuf.WellKnownTypes.Empty());
+                    Console.WriteLine("Service Info: ");
+                    Console.WriteLine(serviceInfoResponse.Info);
+                    Log.Information("Service info retrieved: {ServiceInfo}", serviceInfoResponse.Info);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "An exception occurred while getting service info.");
+                    Console.WriteLine("An error occurred while getting service info.");
+                }
+
+                // Translate Text
+                try
+                {
+                    Log.Information("Connection began. Channel: {Channel}, Client: {Client}", channel, client);
+
+                    Console.WriteLine("Enter text to translate:");
+                    var text = Console.ReadLine();
+                    Console.WriteLine("Enter source language code:");
+                    var fromLanguage = Console.ReadLine();
+                    Console.WriteLine("Enter target language code:");
+                    var toLanguage = Console.ReadLine();
+
+                    var request = new TranslateRequest
+                    {
+                        Text = text,
+                        FromLanguage = fromLanguage,
+                        ToLanguage = toLanguage
+                    };
+
+                    var response = await client.TranslateAsync(request);
+
+                    if (response is not null)
+                    {
+                        Console.WriteLine($"Translation: {response.TranslatedText}");
+                        Log.Information("Translation received: {Translation}", response.TranslatedText);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Response is null");
+                        Log.Warning("Translation response is null.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "An exception occurred while translating text.");
+                    Console.WriteLine("An error occurred while translating text.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "A fatal exception occurred in the application.");
+                Console.WriteLine("A fatal error occurred in the application.");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
     }
 }

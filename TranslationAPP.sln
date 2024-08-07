@@ -11,29 +11,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{9D1D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TranslationConsole", "TranslationConsole", "{F853732B-FFD1-4950-B329-9CB6DB196F0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationConsoleClient", "Clients\TranslationConsole\TranslationConsoleClient\TranslationConsoleClient.csproj", "{8C855983-74C1-47EC-BA96-B960AF872C39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranslationConsoleClient", "Clients\TranslationConsole\TranslationConsoleClient\TranslationConsoleClient.csproj", "{8C855983-74C1-47EC-BA96-B960AF872C39}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "gRPC", "gRPC", "{998D587E-D549-4A42-B618-9306EA038E66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationGrpcService", "Services\gRPC\TranslationGrpcService\TranslationGrpcService.csproj", "{C22DB39B-3C70-44D4-8AC9-A50750CF9455}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranslationGrpcService", "Services\gRPC\TranslationGrpcService\TranslationGrpcService.csproj", "{C22DB39B-3C70-44D4-8AC9-A50750CF9455}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TranslationGrpcConsole", "TranslationGrpcConsole", "{DB62975B-9E46-4878-90ED-666772F3F6F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationIntegrationService", "Services\TranslationIntegration\TranslationIntegrationService\TranslationIntegrationService.csproj", "{FBBEF040-0579-4F7C-9D9A-20197FF84E96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranslationIntegrationService", "Services\TranslationIntegration\TranslationIntegrationService\TranslationIntegrationService.csproj", "{FBBEF040-0579-4F7C-9D9A-20197FF84E96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationGrpcConsoleClient", "Clients\TranslationGrpcConsole\TranslationGrpcConsoleClient\TranslationGrpcConsoleClient.csproj", "{78ADDF5A-316A-4284-8F18-5F967F3EC77E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranslationGrpcConsoleClient", "Clients\TranslationGrpcConsole\TranslationGrpcConsoleClient\TranslationGrpcConsoleClient.csproj", "{78ADDF5A-316A-4284-8F18-5F967F3EC77E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{52D235E1-EC78-4200-BC93-2779937E0F3A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xUnitTest", "xUnitTest", "{303F4AD9-6BF8-4519-A127-BB293B16D611}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "Tests\xUnitTest\UnitTests\UnitTests.csproj", "{2500D1A3-4891-470A-B924-9194454798A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "Tests\xUnitTest\UnitTests\UnitTests.csproj", "{2500D1A3-4891-470A-B924-9194454798A8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TranslationWebApi", "TranslationWebApi", "{AB0EED90-8965-432C-BBEE-02572771E75B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApi", "WebApi", "{36D575F7-0440-4A72-8359-382D7067E911}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationWebApi", "Services\WebApi\TranslationWebApi\TranslationWebApi.csproj", "{4E52350F-FCB4-42FC-90AE-B83C54115B8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranslationWebApi", "Services\WebApi\TranslationWebApi\TranslationWebApi.csproj", "{4E52350F-FCB4-42FC-90AE-B83C54115B8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiClient", "Clients\TranlationWebApi\WebApiClient\WebApiClient.csproj", "{C265C4CB-7279-4285-BBFA-4ED069F86EC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +67,10 @@ Global
 		{4E52350F-FCB4-42FC-90AE-B83C54115B8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E52350F-FCB4-42FC-90AE-B83C54115B8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E52350F-FCB4-42FC-90AE-B83C54115B8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C265C4CB-7279-4285-BBFA-4ED069F86EC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C265C4CB-7279-4285-BBFA-4ED069F86EC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C265C4CB-7279-4285-BBFA-4ED069F86EC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C265C4CB-7279-4285-BBFA-4ED069F86EC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +89,7 @@ Global
 		{AB0EED90-8965-432C-BBEE-02572771E75B} = {9D1D031F-25AB-4356-BB31-B132D2EA6631}
 		{36D575F7-0440-4A72-8359-382D7067E911} = {30745315-86BE-44F4-A253-B5DB75DC5800}
 		{4E52350F-FCB4-42FC-90AE-B83C54115B8F} = {36D575F7-0440-4A72-8359-382D7067E911}
+		{C265C4CB-7279-4285-BBFA-4ED069F86EC2} = {AB0EED90-8965-432C-BBEE-02572771E75B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {671443F6-1357-42DB-983B-616C05E75E9C}

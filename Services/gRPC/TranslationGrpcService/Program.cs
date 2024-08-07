@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+using Serilog;
 using TranslationGrpcService.Services;
 using TranslationIntegrationService.Abstraction;
 
@@ -11,6 +12,11 @@ namespace TranslationGrpcService
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            // Configure Serilog using the settings from the appsettings.json
+            builder.Host.UseSerilog((context, services, configuration) =>
+                configuration.ReadFrom.Configuration(context.Configuration));
+
             builder.Services.AddGrpc();
             builder.Services.AddSingleton<ITranslationService>(provider =>
             {

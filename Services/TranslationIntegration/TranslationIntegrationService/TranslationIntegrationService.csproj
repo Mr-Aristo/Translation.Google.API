@@ -9,6 +9,9 @@
   <ItemGroup>
     <PackageReference Include="Google.Apis.Translate.v2" Version="1.68.0.875" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Serilog" Version="4.0.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.2" />
     <PackageReference Include="StackExchange.Redis" Version="2.8.0" />
   </ItemGroup>
 
