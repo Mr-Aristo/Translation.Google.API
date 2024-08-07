@@ -40,7 +40,9 @@ namespace WebApiClient
                 }
                 catch (Exception ex)
                 {
+                    //Log
                     Log.Error(ex, "An exception occurred while retrieving service info.");
+
                     Console.WriteLine("An error occurred while retrieving service info.");
                 }
 
@@ -70,6 +72,7 @@ namespace WebApiClient
                     else
                     {
                         var errorContent = await translateResponse.Content.ReadAsStringAsync();
+                        //Log
                         Log.Error($"Error translating text: {translateResponse.StatusCode} - {errorContent}");
                         Console.WriteLine("Error translating text.");
                     }

@@ -18,13 +18,16 @@ namespace TranslationGrpcService
                 configuration.ReadFrom.Configuration(context.Configuration));
 
             builder.Services.AddGrpc();
-            builder.Services.AddSingleton<ITranslationService>(provider =>
-            {
-                var configuration = provider.GetRequiredService<IConfiguration>();
-                var googleApiKey = configuration["GoogleApiKey"];
-                var redisConnectionString = configuration["RedisConnectionString"];
-                return new GoogleTranslationService(googleApiKey, redisConnectionString);
-            });
+
+            //T.Integration Dependency Injection
+            builder.Services.AddSingleton<ITranslationService, GoogleTranslationService>();
+            //builder.Services.AddSingleton<ITranslationService>(provider =>
+            //{
+            //    var configuration = provider.GetRequiredService<IConfiguration>();
+            //    var googleApiKey = configuration["GoogleApiKey"];
+            //    var redisConnectionString = configuration["RedisConnectionString"];
+            //    return new GoogleTranslationService(googleApiKey, redisConnectionString);
+            //});
 
             var app = builder.Build();
 

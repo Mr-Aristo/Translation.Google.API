@@ -24,10 +24,14 @@ namespace TranslationGrpcConsoleClient
                 // Get Service Info
                 try
                 {
+                    //Log
                     Log.Information("Requesting service info.");
+
                     var serviceInfoResponse = await client.GetServiceInfoAsync(new Google.Protobuf.WellKnownTypes.Empty());
                     Console.WriteLine("Service Info: ");
                     Console.WriteLine(serviceInfoResponse.Info);
+
+                    //Log
                     Log.Information("Service info retrieved: {ServiceInfo}", serviceInfoResponse.Info);
                 }
                 catch (Exception ex)
@@ -39,6 +43,7 @@ namespace TranslationGrpcConsoleClient
                 // Translate Text
                 try
                 {
+                    //Log
                     Log.Information("Connection began. Channel: {Channel}, Client: {Client}", channel, client);
 
                     Console.WriteLine("Enter text to translate:");
@@ -60,11 +65,15 @@ namespace TranslationGrpcConsoleClient
                     if (response is not null)
                     {
                         Console.WriteLine($"Translation: {response.TranslatedText}");
+
+                        //Log
                         Log.Information("Translation received: {Translation}", response.TranslatedText);
                     }
                     else
                     {
                         Console.WriteLine("Response is null");
+
+                        //Log
                         Log.Warning("Translation response is null.");
                     }
                 }

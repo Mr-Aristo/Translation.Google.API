@@ -26,13 +26,18 @@ namespace TranslationWebApi
                 configuration.ReadFrom.Configuration(context.Configuration));
 
             // Add services to the container.
-            builder.Services.AddSingleton<ITranslationService>(provider =>
-            {
-                var configuration = provider.GetRequiredService<IConfiguration>();
-                var googleApiKey = configuration["GoogleApiKey"];
-                var redisConnectionString = configuration["RedisConnectionString"];
-                return new GoogleTranslationService(googleApiKey, redisConnectionString);
-            });
+
+            //T.Integration Dependency Injection
+            builder.Services.AddSingleton<ITranslationService, GoogleTranslationService>();
+
+            //builder.Services.AddSingleton<ITranslationService>(provider =>
+            //{
+            //    var configuration = provider.GetRequiredService<IConfiguration>();
+            //    var googleApiKey = configuration["GoogleApiKey"];
+            //    var redisConnectionString = configuration["RedisConnectionString"];
+            //    return new GoogleTranslationService(googleApiKey, redisConnectionString);
+            //});
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

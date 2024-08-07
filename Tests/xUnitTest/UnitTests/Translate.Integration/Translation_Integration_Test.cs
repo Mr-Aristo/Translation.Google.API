@@ -30,7 +30,8 @@ namespace UnitTests.Translate.Integration
             var mockConnectionMultiplexer = new Mock<ConnectionMultiplexer>();
             mockConnectionMultiplexer.Setup(m => m.GetDatabase(It.IsAny<int>(), It.IsAny<object>())).Returns(_mockDatabase.Object);
 
-            _translationService = new GoogleTranslationService("fakeApiKey", "localhost");
+            //_translationService = new GoogleTranslationService("fakeApiKey", "localhost");
+            _translationService = new GoogleTranslationService();
         }
 
 

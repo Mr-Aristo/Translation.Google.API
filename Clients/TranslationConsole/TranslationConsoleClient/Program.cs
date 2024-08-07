@@ -7,14 +7,15 @@ namespace TranslationConsoleClient
     {
         static async Task Main(string[] args)
         {
-            var apiKey = "AIzaSyDnjxmV6631yoUBddKPy70o9kqpMCBmUQw";
-            var redisConnectionString = "localhost";
+            //var apiKey = "AIzaSyDnjxmV6631yoUBddKPy70o9kqpMCBmUQw";
+            //var redisConnectionString = "localhost";
+
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
                 .WriteTo.File("log\\log.txt", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
             
-            ITranslationService translationService = new GoogleTranslationService(apiKey, redisConnectionString);
+            ITranslationService translationService = new GoogleTranslationService();
 
             Log.Information("Translate connection began {translationService}", translationService);
             try
