@@ -21,6 +21,8 @@ namespace TranslationGrpcConsoleClient
                 using var channel = GrpcChannel.ForAddress("http://localhost:5231");
                 var client = new TranslationService.TranslationServiceClient(channel);
 
+                //Log
+                Log.Information("Connection began. Channel: {Channel}, Client: {Client}", channel, client);
                 // Get Service Info
                 try
                 {
@@ -43,8 +45,7 @@ namespace TranslationGrpcConsoleClient
                 // Translate Text
                 try
                 {
-                    //Log
-                    Log.Information("Connection began. Channel: {Channel}, Client: {Client}", channel, client);
+                   
 
                     Console.WriteLine("Enter text to translate:");
                     var text = Console.ReadLine();

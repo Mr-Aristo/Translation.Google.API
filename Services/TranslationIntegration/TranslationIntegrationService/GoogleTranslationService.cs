@@ -15,7 +15,8 @@ public class GoogleTranslationService : ITranslationService
     private readonly string _apiKey;
     private readonly string _redisConnectionString;
     private readonly string _defaultApiKey = "AIzaSyDnjxmV6631yoUBddKPy70o9kqpMCBmUQw";
-    private readonly string _defaultRedisConnectionString = "localhost";
+    //private readonly string _defaultRedisConnectionString = "172.17.0.2:6379,abortConnect=false";
+    private readonly string _defaultRedisConnectionString = "192.168.95.21:6379";
     //private readonly string _defaultApiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY");
     //private readonly string _defaultRedisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING");
 
@@ -28,9 +29,23 @@ public class GoogleTranslationService : ITranslationService
         {
             ApiKey = _apiKey
         });
-        _redis = ConnectionMultiplexer.Connect(_redisConnectionString);
 
-        Log.Information("GoogleTranslationService initialized with Redis Connection: {RedisConnection}", _redisConnectionString);
+        Log.Information("Attempting to connect to Redis with connection string: {RedisConnectionString}", _redisConnectionString);
+
+        var options = ConfigurationOptions.Parse(_redisConnectionString);
+        options.AbortOnConnectFail = false; // Bu satır eklendi
+        _redis = ConnectionMultiplexer.Connect(options);
+        //_redis = ConnectionMultiplexer.Connect(_redisConnectionString);
+
+        if (_redis.IsConnected)
+        {
+            Log.Information("Connected to Redis: {RedisConnection}", _redisConnectionString);
+        }
+        else
+        {
+            Log.Error("Failed to connect to Redis.");
+            throw new InvalidOperationException("Failed to connect to Redis.");
+        }
     }
 
     public string GetServiceInfo()
@@ -41,7 +56,6 @@ public class GoogleTranslationService : ITranslationService
             var info = new
             {
                 Service = "Google Translate API",
-                ApiKeyUsed = _apiKey.Substring(0, 4) + "****",
                 CacheType = "Redis",
                 CacheStatus = redisStatus
             };
@@ -69,15 +83,26 @@ public class GoogleTranslationService : ITranslationService
 
             //***** Redis caching 
             var cacheKey = $"{fromLanguage}-{toLanguage}-{text}";
+
+            Log.Information("Attempting to get Redis database");
             var db = _redis.GetDatabase();
+            if (db == null)
+            {
+                Log.Error("Failed to get Redis database.");
+                throw new InvalidOperationException("Failed to get Redis database.");
+            }
+
+            Log.Information("Attempting to get cached translation for key: {CacheKey}", cacheKey);
+
             var cachedTranslation = await db.StringGetAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cachedTranslation))
             {
                 Log.Information("Cache hit for key: {CacheKey}", cacheKey);
+
                 return cachedTranslation;
             }
-           
+
             Log.Information("Cache miss for key: {CacheKey}", cacheKey);
             //******
 
@@ -89,7 +114,7 @@ public class GoogleTranslationService : ITranslationService
 
             await db.StringSetAsync(cacheKey, translation);
             Log.Information("Translation cached for key: {CacheKey} with value: {Translation}", cacheKey, translation);
-
+            Console.ReadLine();
             return translation;
         }
         catch (GoogleApiException ex)
@@ -107,7 +132,7 @@ public class GoogleTranslationService : ITranslationService
         finally
         {
             Log.CloseAndFlush();
-        }        
+        }
     }
     string HandleException(Exception ex, string logMessage, string fromLanguage, string toLanguage, string errorType)
     {
