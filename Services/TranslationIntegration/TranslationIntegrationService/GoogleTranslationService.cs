@@ -16,7 +16,7 @@ public class GoogleTranslationService : ITranslationService
     private readonly string _redisConnectionString;
     private readonly string _defaultApiKey = "AIzaSyDnjxmV6631yoUBddKPy70o9kqpMCBmUQw";
     //private readonly string _defaultRedisConnectionString = "172.17.0.2:6379,abortConnect=false";
-    private readonly string _defaultRedisConnectionString = "192.168.95.21:6379";
+    private readonly string _defaultRedisConnectionString = "192.168.95.21:6379";//Docker/redis-tag:nanoserver
     //private readonly string _defaultApiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY");
     //private readonly string _defaultRedisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING");
 

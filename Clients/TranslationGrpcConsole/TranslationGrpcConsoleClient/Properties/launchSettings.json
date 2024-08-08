@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TranslationGrpcConsoleClient": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
