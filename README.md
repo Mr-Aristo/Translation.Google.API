@@ -7,7 +7,7 @@ This service abstracts the complexities of dealing with the API directly and pro
 ### Translation gRPC Service
 The Translation gRPC Service leverages the Translation Integration Service to provide translation functionalities via the gRPC protocol. 
 gRPC, which stands for Remote Procedure Call, allows this service to efficiently handle streaming data and requests in a distributed environment. 
-This service is designed to facilitate fast and reliable communication between different components of your system,
+This service is designed to facilitate fast and reliable communication between different components of the system,
 making it suitable for high-performance scenarios where low latency and high throughput are crucial.
 
 ### Translation Web API
