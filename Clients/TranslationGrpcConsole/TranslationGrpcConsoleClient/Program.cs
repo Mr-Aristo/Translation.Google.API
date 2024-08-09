@@ -18,7 +18,7 @@ namespace TranslationGrpcConsoleClient
 
             try
             {
-                using var channel = GrpcChannel.ForAddress("http://localhost:5231");
+                using var channel = GrpcChannel.ForAddress("http://192.168.84.79:60839");
                 var client = new TranslationService.TranslationServiceClient(channel);
 
                 //Log

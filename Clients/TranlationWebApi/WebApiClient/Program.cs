@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Serilog;
 using WebApiClient.Model;
@@ -19,12 +20,13 @@ namespace WebApiClient
 
             try
             {
-                var httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5103") };
+                var httpClient = new HttpClient { BaseAddress = new Uri("http://192.168.81.241:60839") };
 
                 // Get service info
                 try
                 {
                     var infoResponse = await httpClient.GetAsync("Translation/info");
+
                     if (infoResponse.IsSuccessStatusCode)
                     {
                         var serviceInfo = await infoResponse.Content.ReadAsStringAsync();
