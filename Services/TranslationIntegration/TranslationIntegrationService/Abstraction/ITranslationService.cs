@@ -9,6 +9,6 @@ namespace TranslationIntegrationService.Abstraction
     public interface ITranslationService
     {
         string GetServiceInfo();
-        Task<string> TranslateTextAsync(string text, string fromLanguage, string toLanguage);
+        Task<string[]> TranslateTextAsync(string[] text, string fromLanguage, string toLanguage);
     }
 }

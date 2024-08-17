@@ -72,69 +72,81 @@ public class GoogleTranslationService : ITranslationService
         }
     }
 
-    public async Task<string> TranslateTextAsync(string text, string fromLanguage, string toLanguage)
+    public async Task<string[]> TranslateTextAsync(string[] texts, string fromLanguage, string toLanguage)
     {
         try
         {
-            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(fromLanguage) || string.IsNullOrEmpty(toLanguage))
+            var results = new List<string>();
+
+            if (texts == null || texts.Length == 0 || string.IsNullOrEmpty(fromLanguage) || string.IsNullOrEmpty(toLanguage))
             {
-                throw new ArgumentException("Text, fromLanguage, and toLanguage cannot be null or empty.");
+                throw new ArgumentException("Texts, fromLanguage, and toLanguage cannot be null or empty.");
             }
 
-            //***** Redis caching 
-            var cacheKey = $"{fromLanguage}-{toLanguage}-{text}";
-
-            Log.Information("Attempting to get Redis database");
-            var db = _redis.GetDatabase();
-            if (db == null)
+            foreach (var text in texts)
             {
-                Log.Error("Failed to get Redis database.");
-                throw new InvalidOperationException("Failed to get Redis database.");
+                var cacheKey = $"{fromLanguage}-{toLanguage}-{text}";
+
+                Log.Information("Attempting to get Redis database");
+                var db = _redis.GetDatabase();
+                if (db == null)
+                {
+                    Log.Error("Failed to get Redis database.");
+                    throw new InvalidOperationException("Failed to get Redis database.");
+                }
+
+                Log.Information("Attempting to get cached translation for key: {CacheKey}", cacheKey);
+                var cachedTranslation = await db.StringGetAsync(cacheKey);
+
+                if (!string.IsNullOrEmpty(cachedTranslation))
+                {
+                    Log.Information("Cache hit for key: {CacheKey}", cacheKey);
+                    results.Add(cachedTranslation);
+                }
+                else
+                {
+                    Log.Information("Cache miss for key: {CacheKey}", cacheKey);
+
+                    var translation = await TranslateText(text, fromLanguage, toLanguage);
+
+                    await db.StringSetAsync(cacheKey, translation);
+                    Log.Information("Translation cached for key: {CacheKey} with value: {Translation}", cacheKey, translation);
+
+                    results.Add(translation);
+                }
             }
 
-            Log.Information("Attempting to get cached translation for key: {CacheKey}", cacheKey);
-
-            var cachedTranslation = await db.StringGetAsync(cacheKey);
-
-            if (!string.IsNullOrEmpty(cachedTranslation))
-            {
-                Log.Information("Cache hit for key: {CacheKey}", cacheKey);
-
-                return cachedTranslation;
-            }
-
-            Log.Information("Cache miss for key: {CacheKey}", cacheKey);
-            //******
-
-            var request = _translateService.Translations.List(new[] { text }, toLanguage);
-            request.Source = fromLanguage;
-
-            var response = await request.ExecuteAsync();
-            var translation = response.Translations.First().TranslatedText;
-
-            await db.StringSetAsync(cacheKey, translation);
-            Log.Information("Translation cached for key: {CacheKey} with value: {Translation}", cacheKey, translation);
-            Console.ReadLine();
-            return translation;
+            return results.ToArray();
         }
         catch (GoogleApiException ex)
         {
-            return HandleException(ex, "Google API error occurred while translating text from {FromLanguage} to {ToLanguage}.", fromLanguage, toLanguage, "Google API error");
+            return HandleExceptionArray(ex, "Google API error occurred while translating text from {FromLanguage} to {ToLanguage}.", fromLanguage, toLanguage, "Google API error");
         }
         catch (RedisException ex)
         {
-            return HandleException(ex, "Redis error occurred while translating text from {FromLanguage} to {ToLanguage}.", fromLanguage, toLanguage, "Redis error");
+            return HandleExceptionArray(ex, "Redis error occurred while translating text from {FromLanguage} to {ToLanguage}.", fromLanguage, toLanguage, "Redis error");
         }
         catch (Exception ex)
         {
-            return HandleException(ex, "An unexpected error occurred while translating text from {FromLanguage} to {ToLanguage}.", fromLanguage, toLanguage, "unexpected error");
+            return HandleExceptionArray(ex, "An unexpected error occurred while translating text from {FromLanguage} to {ToLanguage}.", fromLanguage, toLanguage, "unexpected error");
         }
         finally
         {
             Log.CloseAndFlush();
         }
     }
-    string HandleException(Exception ex, string logMessage, string fromLanguage, string toLanguage, string errorType)
+
+    private async Task<string> TranslateText(string text, string fromLanguage, string toLanguage)
+    {
+        var request = _translateService.Translations.List(new[] { text }, toLanguage);
+        request.Source = fromLanguage;
+
+        var response = await request.ExecuteAsync();
+        var translation = response.Translations.First().TranslatedText;
+
+        return translation;
+    }
+    string[] HandleExceptionArray(Exception ex, string logMessage, string fromLanguage, string toLanguage, string errorType)
     {
         Log.Error(ex, logMessage, fromLanguage, toLanguage);
         throw new InvalidOperationException($"Failed to translate text due to {errorType}.", ex);

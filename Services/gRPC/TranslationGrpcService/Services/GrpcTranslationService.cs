@@ -23,7 +23,9 @@ namespace TranslationGrpcService.Services
 
             try
             {
-                var translation = await _translationService.TranslateTextAsync(request.Text, request.FromLanguage, request.ToLanguage);
+                var translationArray = await _translationService.TranslateTextAsync(new[] { request.Text }, request.FromLanguage, request.ToLanguage);
+                var translation = translationArray.FirstOrDefault();
+
                 //Log
                 _logger.LogInformation("Translation successful for text: {Text}, from: {FromLanguage}, to: {ToLanguage}",
                    request.Text, request.FromLanguage, request.ToLanguage);

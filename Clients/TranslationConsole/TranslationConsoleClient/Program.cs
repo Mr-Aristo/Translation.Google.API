@@ -6,7 +6,7 @@ namespace TranslationConsoleClient
     internal class Program
     {
         static async Task Main(string[] args)
-        {       
+        {
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
                 .WriteTo.File("log\\log.txt", rollingInterval: RollingInterval.Day)
@@ -14,20 +14,18 @@ namespace TranslationConsoleClient
 
             ITranslationService translationService = new GoogleTranslationService();
 
-            Log.Information("Translate connection began {translationService}", translationService);
+            Log.Information("Translate connection began {TranslationService}", translationService);
             try
             {
                 // Get Service Info
                 try
                 {
-                    //Log
                     Log.Information("Requesting service info.");
 
                     var serviceInfoResponse = translationService.GetServiceInfo();
                     Console.WriteLine("Service Info: ");
                     Console.WriteLine(serviceInfoResponse);
 
-                    //Log
                     Log.Information("Service info retrieved: {ServiceInfo}", serviceInfoResponse);
                 }
                 catch (Exception ex)
@@ -36,35 +34,44 @@ namespace TranslationConsoleClient
                     Console.WriteLine("An error occurred while getting service info.");
                 }
 
-                try
+                // Multiple translation loop
+                Console.WriteLine("Enter source language code:");
+                var fromLanguage = Console.ReadLine();
+                Console.WriteLine("Enter target language code:");
+                var toLanguage = Console.ReadLine();
+
+                while (true)
                 {
-                    Console.WriteLine("Enter text to translate:");
+                    Console.WriteLine("Enter text to translate (or type 'exit' to quit):");
                     var text = Console.ReadLine();
-                    Console.WriteLine("Enter source language code:");
-                    var fromLanguage = Console.ReadLine();
-                    Console.WriteLine("Enter target language code:");
-                    var toLanguage = Console.ReadLine();
 
-                    var translation = await translationService.TranslateTextAsync(text, fromLanguage, toLanguage);
+                    if (text?.ToLower() == "exit")
+                        break;
 
-                    if (translation is not null)
+                    if (!string.IsNullOrWhiteSpace(text))
                     {
+                        try
+                        {
+                            var translation = await translationService.TranslateTextAsync(new[] { text }, fromLanguage, toLanguage);
 
-                        Console.WriteLine($"Translation: {translation}");
-
-                    }
-                    else
-                    {
-                        Console.WriteLine("Translation response is null");
-                        Log.Error("Translation respinse is null");
+                            if (translation != null && translation.Length > 0)
+                            {
+                                Console.WriteLine($"Translation: {translation[0]}");
+                                Log.Information("Translation received: {Translation}", translation[0]);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Translation response is null");
+                                Log.Error("Translation response is null");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "An exception occurred while attempting translate.");
+                            Console.WriteLine("An error occurred while attempting translate.");
+                        }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "An exception occurred while attempting translate.");
-                    Console.WriteLine("An error occurred while attempting translate.");
-                }
-
             }
             catch (Exception ex)
             {

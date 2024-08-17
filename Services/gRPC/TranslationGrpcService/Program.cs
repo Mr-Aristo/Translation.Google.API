@@ -21,6 +21,7 @@ namespace TranslationGrpcService
 
             //T.Integration Dependency Injection
             builder.Services.AddSingleton<ITranslationService, GoogleTranslationService>();
+            builder.Services.AddSingleton<ITranslationService, Test>();
             //builder.Services.AddSingleton<ITranslationService>(provider =>
             //{
             //    var configuration = provider.GetRequiredService<IConfiguration>();

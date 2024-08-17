@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Serilog;
 using WebApiClient.Model;
@@ -42,47 +42,55 @@ namespace WebApiClient
                 }
                 catch (Exception ex)
                 {
-                    //Log
                     Log.Error(ex, "An exception occurred while retrieving service info.");
-
                     Console.WriteLine("An error occurred while retrieving service info.");
                 }
 
-                // Proceed with translation
-                try
+                // Multiple translation loop
+                Console.WriteLine("Enter source language code:");
+                var fromLanguage = Console.ReadLine();
+                Console.WriteLine("Enter target language code:");
+                var toLanguage = Console.ReadLine();
+
+                while (true)
                 {
-                    Console.WriteLine("Enter text to translate:");
+                    Console.WriteLine("Enter text to translate (or type 'exit' to quit):");
                     var text = Console.ReadLine();
-                    Console.WriteLine("Enter source language code:");
-                    var fromLanguage = Console.ReadLine();
-                    Console.WriteLine("Enter target language code:");
-                    var toLanguage = Console.ReadLine();
 
-                    var request = new
-                    {
-                        Text = text,
-                        FromLanguage = fromLanguage,
-                        ToLanguage = toLanguage
-                    };
+                    if (text?.ToLower() == "exit")
+                        break;
 
-                    var translateResponse = await httpClient.PostAsJsonAsync("Translation/translate", request);
-                    if (translateResponse.IsSuccessStatusCode)
+                    if (!string.IsNullOrWhiteSpace(text))
                     {
-                        var result = await translateResponse.Content.ReadFromJsonAsync<TranslateResponse>();
-                        Console.WriteLine($"Translation: {result.TranslatedText}");
+                        try
+                        {
+                            var request = new
+                            {
+                                Text = text,
+                                FromLanguage = fromLanguage,
+                                ToLanguage = toLanguage
+                            };
+
+                            var translateResponse = await httpClient.PostAsJsonAsync("Translation/translate", request);
+                            if (translateResponse.IsSuccessStatusCode)
+                            {
+                                var result = await translateResponse.Content.ReadFromJsonAsync<TranslateResponse>();
+                                Console.WriteLine($"Translation: {result.TranslatedText}");
+                                Log.Information("Translation received: {Translation}", result.TranslatedText);
+                            }
+                            else
+                            {
+                                var errorContent = await translateResponse.Content.ReadAsStringAsync();
+                                Log.Error($"Error translating text: {translateResponse.StatusCode} - {errorContent}");
+                                Console.WriteLine("Error translating text.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "An exception occurred while translating text.");
+                            Console.WriteLine("An error occurred while translating text.");
+                        }
                     }
-                    else
-                    {
-                        var errorContent = await translateResponse.Content.ReadAsStringAsync();
-                        //Log
-                        Log.Error($"Error translating text: {translateResponse.StatusCode} - {errorContent}");
-                        Console.WriteLine("Error translating text.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "An exception occurred while translating text.");
-                    Console.WriteLine("An error occurred while translating text.");
                 }
             }
             catch (Exception ex)
@@ -96,6 +104,4 @@ namespace WebApiClient
             }
         }
     }
-
-
 }

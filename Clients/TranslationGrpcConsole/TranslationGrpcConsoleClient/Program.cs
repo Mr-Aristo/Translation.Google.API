@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Grpc.Net.Client;
 using Serilog;
-using TranslationGrpcConsoleClient;
+using TranslationIntegrationService.Abstraction;
 
 namespace TranslationGrpcConsoleClient
 {
@@ -14,26 +15,25 @@ namespace TranslationGrpcConsoleClient
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
                 .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Day)
-                .CreateLogger();
-
+                .CreateLogger();           
+            
             try
             {
                 using var channel = GrpcChannel.ForAddress("http://192.168.84.79:60839");
                 var client = new TranslationService.TranslationServiceClient(channel);
 
-                //Log
+                // Log
                 Log.Information("Connection began. Channel: {Channel}, Client: {Client}", channel, client);
+
                 // Get Service Info
                 try
                 {
-                    //Log
                     Log.Information("Requesting service info.");
 
                     var serviceInfoResponse = await client.GetServiceInfoAsync(new Google.Protobuf.WellKnownTypes.Empty());
                     Console.WriteLine("Service Info: ");
                     Console.WriteLine(serviceInfoResponse.Info);
 
-                    //Log
                     Log.Information("Service info retrieved: {ServiceInfo}", serviceInfoResponse.Info);
                 }
                 catch (Exception ex)
@@ -43,45 +43,58 @@ namespace TranslationGrpcConsoleClient
                 }
 
                 // Translate Text
-                try
-                {
-                   
+                var texts = new List<string>();
 
-                    Console.WriteLine("Enter text to translate:");
+                Console.WriteLine("Enter source language code:");
+                var fromLanguage = Console.ReadLine();
+                Console.WriteLine("Enter target language code:");
+                var toLanguage = Console.ReadLine();
+
+                while (true)
+                {
+                    Console.WriteLine("Enter text to translate (or type 'exit' to quit):");
                     var text = Console.ReadLine();
-                    Console.WriteLine("Enter source language code:");
-                    var fromLanguage = Console.ReadLine();
-                    Console.WriteLine("Enter target language code:");
-                    var toLanguage = Console.ReadLine();
 
-                    var request = new TranslateRequest
+                    if (text?.ToLower() == "exit")
+                        break;
+
+                    if (!string.IsNullOrWhiteSpace(text))
                     {
-                        Text = text,
-                        FromLanguage = fromLanguage,
-                        ToLanguage = toLanguage
-                    };
-
-                    var response = await client.TranslateAsync(request);
-
-                    if (response is not null)
-                    {
-                        Console.WriteLine($"Translation: {response.TranslatedText}");
-
-                        //Log
-                        Log.Information("Translation received: {Translation}", response.TranslatedText);
+                        texts.Add(text);
                     }
-                    else
-                    {
-                        Console.WriteLine("Response is null");
 
-                        //Log
-                        Log.Warning("Translation response is null.");
+                    if (texts.Count > 0)
+                    {
+                        try
+                        {
+                            var request = new TranslateRequest
+                            {
+                                Text = string.Join(" ", texts),
+                                FromLanguage = fromLanguage,
+                                ToLanguage = toLanguage
+                            };
+
+                            var response = await client.TranslateAsync(request);
+
+                            if (response is not null)
+                            {
+                                Console.WriteLine($"Translation: {response.TranslatedText}");
+                                Log.Information("Translation received: {Translation}", response.TranslatedText);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Response is null");
+                                Log.Warning("Translation response is null.");
+                            }
+
+                            texts.Clear(); 
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "An exception occurred while translating text.");
+                            Console.WriteLine("An error occurred while translating text.");
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "An exception occurred while translating text.");
-                    Console.WriteLine("An error occurred while translating text.");
                 }
             }
             catch (Exception ex)
