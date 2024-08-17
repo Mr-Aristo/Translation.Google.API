@@ -2,39 +2,47 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Grpc.Net.Client;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using TranslationGrpcService.Services;
 using TranslationIntegrationService.Abstraction;
 
 namespace TranslationGrpcConsoleClient
 {
     internal class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            // Serilog configuration
+      
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
                 .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Day)
-                .CreateLogger();           
-            
+                .CreateLogger();
+
+           
+            var serviceProvider = new ServiceCollection()
+                .AddSingleton<GrpcChannel>(sp => GrpcChannel.ForAddress("http://192.168.84.79:60839"))
+                .AddSingleton<ITranslationService, BaseGrpcTranslateService>()
+                .BuildServiceProvider();
+
+     
+            var translationService = serviceProvider.GetRequiredService<ITranslationService>();
+
             try
             {
-                using var channel = GrpcChannel.ForAddress("http://192.168.84.79:60839");
-                var client = new TranslationService.TranslationServiceClient(channel);
-
                 // Log
-                Log.Information("Connection began. Channel: {Channel}, Client: {Client}", channel, client);
+                Log.Information("Connection began using gRPC channel.");
 
-                // Get Service Info
+               
                 try
                 {
                     Log.Information("Requesting service info.");
 
-                    var serviceInfoResponse = await client.GetServiceInfoAsync(new Google.Protobuf.WellKnownTypes.Empty());
+                    var serviceInfo = translationService.GetServiceInfo();
                     Console.WriteLine("Service Info: ");
-                    Console.WriteLine(serviceInfoResponse.Info);
+                    Console.WriteLine(serviceInfo);
 
-                    Log.Information("Service info retrieved: {ServiceInfo}", serviceInfoResponse.Info);
+                    Log.Information("Service info retrieved: {ServiceInfo}", serviceInfo);
                 }
                 catch (Exception ex)
                 {
@@ -67,27 +75,15 @@ namespace TranslationGrpcConsoleClient
                     {
                         try
                         {
-                            var request = new TranslateRequest
-                            {
-                                Text = string.Join(" ", texts),
-                                FromLanguage = fromLanguage,
-                                ToLanguage = toLanguage
-                            };
+                            var translations = await translationService.TranslateTextAsync(texts.ToArray(), fromLanguage, toLanguage);
 
-                            var response = await client.TranslateAsync(request);
-
-                            if (response is not null)
+                            foreach (var translation in translations)
                             {
-                                Console.WriteLine($"Translation: {response.TranslatedText}");
-                                Log.Information("Translation received: {Translation}", response.TranslatedText);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Response is null");
-                                Log.Warning("Translation response is null.");
+                                Console.WriteLine($"Translation: {translation}");
+                                Log.Information("Translation received: {Translation}", translation);
                             }
 
-                            texts.Clear(); 
+                            texts.Clear();
                         }
                         catch (Exception ex)
                         {

@@ -1,28 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using System.Net.Http.Json;
+using TranslationIntegrationService.Abstraction;
+using TranslationWebApi.Services;
 using WebApiClient.Model;
 
 namespace WebApiClient
 {
     internal class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            // Serilog configuration
+           
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
                 .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
+            
+            //var serviceProvider = new ServiceCollection()
+            //    .AddLogging(configure => configure.AddSerilog())
+            //    .AddTransient<ITranslationService, BaseAPITranslateService>()
+            //    .BuildServiceProvider();
+
+            //var translationService = serviceProvider.GetService<ITranslationService>();
+            
             try
             {
                 var httpClient = new HttpClient { BaseAddress = new Uri("http://192.168.81.241:60839") };
 
-                // Get service info
                 try
                 {
                     var infoResponse = await httpClient.GetAsync("Translation/info");
@@ -46,7 +52,6 @@ namespace WebApiClient
                     Console.WriteLine("An error occurred while retrieving service info.");
                 }
 
-                // Multiple translation loop
                 Console.WriteLine("Enter source language code:");
                 var fromLanguage = Console.ReadLine();
                 Console.WriteLine("Enter target language code:");

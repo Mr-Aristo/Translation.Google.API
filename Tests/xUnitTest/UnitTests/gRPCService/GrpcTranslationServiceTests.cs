@@ -11,14 +11,14 @@ namespace TranslationGrpcService.Tests
     public class GrpcTranslationServiceTests
     {
         private readonly Mock<ITranslationService> _mockTranslationService;
-        private readonly Mock<ILogger<GrpcTranslationService>> _mockLogger;
-        private readonly GrpcTranslationService _service;
+        private readonly Mock<ILogger<GrpcService>> _mockLogger;
+        private readonly GrpcService _service;
 
         public GrpcTranslationServiceTests()
         {
             _mockTranslationService = new Mock<ITranslationService>();
-            _mockLogger = new Mock<ILogger<GrpcTranslationService>>();
-            _service = new GrpcTranslationService(_mockTranslationService.Object, _mockLogger.Object);
+            _mockLogger = new Mock<ILogger<GrpcService>>();
+            _service = new GrpcService(_mockTranslationService.Object, _mockLogger.Object);
         }
 
         private ServerCallContext CreateMockServerCallContext()

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using TranslationIntegrationService.Abstraction;
+using TranslationWebApi.Services;
 
 namespace TranslationWebApi
 {
@@ -28,7 +29,7 @@ namespace TranslationWebApi
             // Add services to the container.
 
             //T.Integration Dependency Injection
-            builder.Services.AddSingleton<ITranslationService, GoogleTranslationService>();
+            builder.Services.AddSingleton<ITranslationService, BaseAPITranslateService>();
 
             //builder.Services.AddSingleton<ITranslationService>(provider =>
             //{
@@ -49,7 +50,7 @@ namespace TranslationWebApi
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-                //app.MapGrpcService<GrpcTranslationService>();
+                //app.MapGrpcService<GrpcService>();
 
             }
 

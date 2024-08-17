@@ -20,7 +20,7 @@ namespace TranslationGrpcService
             builder.Services.AddGrpc();
 
             //T.Integration Dependency Injection
-            builder.Services.AddSingleton<ITranslationService, GoogleTranslationService>();
+            builder.Services.AddSingleton<ITranslationService, BaseGrpcTranslateService>();
             //builder.Services.AddSingleton<ITranslationService>(provider =>
             //{
             //    var configuration = provider.GetRequiredService<IConfiguration>();
@@ -32,7 +32,7 @@ namespace TranslationGrpcService
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            app.MapGrpcService<GrpcTranslationService>();
+            app.MapGrpcService<GrpcService>();
             app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
             app.Run();

@@ -16,4 +16,9 @@
     <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Services\TranslationIntegration\TranslationIntegrationService\TranslationIntegrationService.csproj" />
+    <ProjectReference Include="..\..\..\Services\WebApi\TranslationWebApi\TranslationWebApi.csproj" />
+  </ItemGroup>
+
 </Project>
