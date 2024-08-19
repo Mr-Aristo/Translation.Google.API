@@ -86,12 +86,12 @@ namespace TranslationGrpcService.Services
                     throw new InvalidOperationException("Failed to get Redis database.");
                 }
 
-                // Create cache keys for all texts
+                
                 var cacheKeys = texts.Select(text => $"{fromLanguage}-{toLanguage}-{text}").ToArray();
 
                 Log.Information("Attempting to get cached translations for keys: {CacheKeys}", cacheKeys);
 
-                // Get cached translations in bulk
+                
                 var cachedTranslations = await db.StringGetAsync(cacheKeys.Select(k => (RedisKey)k).ToArray());
 
                 var results = new List<string>();
@@ -113,13 +113,13 @@ namespace TranslationGrpcService.Services
                     }
                 }
 
-                // If there are texts that need to be translated
+                
                 if (textsToTranslate.Count > 0)
                 {
                     Log.Information("Translating {Count} texts with Google API.", textsToTranslate.Count);
                     var translations = await TranslateText(textsToTranslate.ToArray(), fromLanguage, toLanguage);
 
-                    // Store translations in Redis and add them to results
+                    
                     for (int i = 0; i < translations.Length; i++)
                     {
                         var cacheKey = cacheKeys[missingIndexes[i]];
