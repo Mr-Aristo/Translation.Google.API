@@ -17,13 +17,13 @@ namespace WebApiClient
                 .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
-            
-            //var serviceProvider = new ServiceCollection()
-            //    .AddLogging(configure => configure.AddSerilog())
-            //    .AddTransient<ITranslationService, BaseAPITranslateService>()
-            //    .BuildServiceProvider();
 
-            //var translationService = serviceProvider.GetService<ITranslationService>();
+            var serviceProvider = new ServiceCollection()
+                .AddLogging(configure => configure.AddSerilog())
+                .AddTransient<ITranslationService, BaseAPITranslateService>()
+                .BuildServiceProvider();
+
+            var translationService = serviceProvider.GetService<ITranslationService>();
             
             try
             {
@@ -45,7 +45,7 @@ namespace WebApiClient
                         Log.Error($"Error retrieving service info: {infoResponse.StatusCode} - {errorContent}");
                         Console.WriteLine("Error retrieving service info.");
                     }
-                }
+                } 
                 catch (Exception ex)
                 {
                     Log.Error(ex, "An exception occurred while retrieving service info.");
