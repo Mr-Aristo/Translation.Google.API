@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using TranslationGrpcService.Services;
 using TranslationIntegrationService.Abstraction;
+using TranslationIntegrationService.Services;
 
 namespace TranslationGrpcConsoleClient
 {
@@ -22,7 +23,7 @@ namespace TranslationGrpcConsoleClient
            
             var serviceProvider = new ServiceCollection()
                 .AddSingleton<GrpcChannel>(sp => GrpcChannel.ForAddress("http://192.168.84.79:60839"))
-                .AddSingleton<ITranslationService, BaseGrpcTranslateService>()
+                .AddSingleton<ITranslationService, BaseTranslateService>()
                 .BuildServiceProvider();
 
      

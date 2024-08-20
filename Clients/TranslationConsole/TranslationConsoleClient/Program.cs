@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using TranslationIntegrationService.Abstraction;
+using TranslationIntegrationService.Services;
 
 namespace TranslationConsoleClient
 {
@@ -12,7 +13,7 @@ namespace TranslationConsoleClient
                 .WriteTo.File("log\\log.txt", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
-            ITranslationService translationService = new GoogleTranslationService();
+            ITranslationService translationService = new BaseTranslateService();
 
             Log.Information("Translate connection began {TranslationService}", translationService);
             try

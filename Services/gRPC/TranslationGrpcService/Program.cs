@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 using TranslationGrpcService.Services;
 using TranslationIntegrationService.Abstraction;
+using TranslationIntegrationService.Services;
 
 namespace TranslationGrpcService
 {
@@ -20,7 +21,7 @@ namespace TranslationGrpcService
             builder.Services.AddGrpc();
 
             //T.Integration Dependency Injection
-            builder.Services.AddSingleton<ITranslationService, BaseGrpcTranslateService>();
+            builder.Services.AddSingleton<ITranslationService, BaseTranslateService>();
             //builder.Services.AddSingleton<ITranslationService>(provider =>
             //{
             //    var configuration = provider.GetRequiredService<IConfiguration>();
