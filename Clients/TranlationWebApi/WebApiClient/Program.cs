@@ -2,7 +2,7 @@
 using Serilog;
 using System.Net.Http.Json;
 using TranslationIntegrationService.Abstraction;
-using TranslationWebApi.Services;
+using TranslationIntegrationService.Services;
 using WebApiClient.Model;
 
 namespace WebApiClient
@@ -20,7 +20,7 @@ namespace WebApiClient
 
             var serviceProvider = new ServiceCollection()
                 .AddLogging(configure => configure.AddSerilog())
-                .AddTransient<ITranslationService, BaseAPITranslateService>()
+                .AddTransient<ITranslationService, BaseTranslateService>()
                 .BuildServiceProvider();
 
             var translationService = serviceProvider.GetService<ITranslationService>();
